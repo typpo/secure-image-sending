@@ -1,20 +1,20 @@
 var canvas = document.getElementById('canvas');
-var context = context = canvas.getContext('2d');
-var img = img = document.createElement('img');
+var context = canvas.getContext('2d');
+var img = document.createElement('img');
 
 // Image for loading
-img.addEventListener('load', function () {
+img.addEventListener('load', function() {
   clearCanvas();
   context.drawImage(img, 0, 0);
 }, false);
 
 // To enable drag and drop
-canvas.addEventListener('dragover', function (evt) {
+canvas.addEventListener('dragover', function(evt) {
   evt.preventDefault();
 }, false);
 
 // Handle dropped image file - only Firefox and Google Chrome
-canvas.addEventListener('drop', function (evt) {
+canvas.addEventListener('drop', function(evt) {
   var files = evt.dataTransfer.files;
   if (files.length > 0) {
     var file = files[0];
@@ -40,32 +40,29 @@ function getCanvasImageData() {
 
 function getCanvasDataString() {
   var pix = getCanvasImageData();
-  var s='';
+  var bytes = []
   // Removes alpha to save space.
   for (var i=0; i<pix.length; i+=4) {
-    s+=(String.fromCharCode(pix[i])
-        + String.fromCharCode(pix[i+1])
-        + String.fromCharCode(pix[i+2]));
+    bytes.push(String.fromCharCode(pix[i]));
+    bytes.push(String.fromCharCode(pix[i+1]));
+    bytes.push(String.fromCharCode(pix[i+2]));
   }
-  return s;
+  return bytes.join('');
 }
 
 function setCanvasDataFromString(s) {
   // Build array
-  var p=[];
-  for (var i=0; i<s.length; i+=3) {
-    for (var j=0; j<3; j++) {
-      p.push(s.substring(i+j,i+j+1).charCodeAt());
-    }
-    p.push(255); // Hardcodes alpha to 255.
+  var img = context.createImageData(canvas.width, canvas.height);
+  for (var i=0,j=0; j < s.length; j=j+3) {
+    img.data[i] = s[j].charCodeAt();
+    img.data[i+1] = s[j+1].charCodeAt();
+    img.data[i+2] = s[j+2].charCodeAt();
+    img.data[i+3] = 255;
+    i+=4;
   }
 
   // Set it
-  var arr = p;
-  for (var i=0; i<arr.length; i++) { arr[i]-=0; }
-  var imgd = context.getImageData(0, 0, canvas.width, canvas.height);
-  imgd.data = arr;
-  context.putImageData(imgd, 0, 0);
+  context.putImageData(img, 0, 0);
 }
 
 window.onload = function() {
@@ -80,6 +77,7 @@ window.onload = function() {
     var encryptedString = sjcl.encrypt(passcode, data);
 
     document.getElementById('inout').value = encryptedString;
+    clearCanvas();
   };
 
   btnDecrypt.onclick = function() {
