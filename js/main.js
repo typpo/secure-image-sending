@@ -71,10 +71,11 @@ function setCanvasDataFromString(s) {
 window.onload = function() {
   var btnEncrypt = document.getElementById('btnEncrypt');
   var btnDecrypt = document.getElementById('btnDecrypt');
+  var btnClear = document.getElementById('btnClear');
 
   btnEncrypt.onclick = function() {
     var passcode = 'foobar';
-    var data  = getCanvasDataString();
+    var data = getCanvasDataString();
 
     var encryptedString = CryptoJS.AES.encrypt(data, passcode);
 
@@ -84,5 +85,15 @@ window.onload = function() {
   btnDecrypt.onclick = function() {
     var passcode = 'foobar';
 
+    var encryptedString = document.getElementById('inout').value;
+    var decryptedString = CryptoJS.AES.decrypt(encryptedString, passcode);
+
+    console.log(CryptoJS.enc.Latin1.stringify(decryptedString));
+    setCanvasDataFromString(decryptedString);
+    document.getElementById('inout').value = '';
+  };
+
+  btnClear.onclick = function() {
+    clearCanvas();
   };
 };
