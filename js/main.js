@@ -77,7 +77,7 @@ window.onload = function() {
     var passcode = 'foobar';
     var data = getCanvasDataString();
 
-    var encryptedString = CryptoJS.AES.encrypt(data, passcode);
+    var encryptedString = sjcl.encrypt(passcode, data);
 
     document.getElementById('inout').value = encryptedString;
   };
@@ -85,10 +85,9 @@ window.onload = function() {
   btnDecrypt.onclick = function() {
     var passcode = 'foobar';
 
-    var encryptedString = document.getElementById('inout').value;
-    var decryptedString = CryptoJS.AES.decrypt(encryptedString, passcode);
+    var data = document.getElementById('inout').value;
+    var decryptedString = sjcl.decrypt(passcode, data);
 
-    console.log(CryptoJS.enc.Latin1.stringify(decryptedString));
     setCanvasDataFromString(decryptedString);
     document.getElementById('inout').value = '';
   };
