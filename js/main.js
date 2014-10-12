@@ -65,32 +65,71 @@ function setCanvasDataFromString(s) {
   context.putImageData(img, 0, 0);
 }
 
-window.onload = function() {
-  var btnEncrypt = document.getElementById('btnEncrypt');
-  var btnDecrypt = document.getElementById('btnDecrypt');
-  var btnClear = document.getElementById('btnClear');
+var btnEncrypt = document.getElementById('btnEncrypt');
+var btnDecrypt = document.getElementById('btnDecrypt');
+var btnSave = document.getElementById('btnSave');
+var btnLoad = document.getElementById('btnLoad');
+var btnClear = document.getElementById('btnClear');
 
-  btnEncrypt.onclick = function() {
-    var passcode = prompt('What is your password?  Make it good.');
-    var data = getCanvasDataString();
+btnEncrypt.onclick = function() {
+  var passcode = prompt('What is your password?  Make it good.');
+  var data = getCanvasDataString();
+  var encryptedString = sjcl.encrypt(passcode, data);
 
-    var encryptedString = sjcl.encrypt(passcode, data);
-
-    document.getElementById('inout').value = encryptedString;
-    clearCanvas();
-  };
-
-  btnDecrypt.onclick = function() {
-    var passcode = prompt('Decrypt with password...');
-
-    var data = document.getElementById('inout').value;
-    var decryptedString = sjcl.decrypt(passcode, data);
-
-    setCanvasDataFromString(decryptedString);
-    document.getElementById('inout').value = '';
-  };
-
-  btnClear.onclick = function() {
-    clearCanvas();
-  };
+  document.getElementById('inout').value = encryptedString;
+  clearCanvas();
 };
+
+btnDecrypt.onclick = function() {
+  var passcode = prompt('Decrypt with password...');
+  var data = document.getElementById('inout').value;
+  var decryptedString = sjcl.decrypt(passcode, data);
+
+  setCanvasDataFromString(decryptedString);
+  document.getElementById('inout').value = '';
+};
+
+btnSave.onclick = function() {
+  var passcode = prompt('What is your password?  Make it good.');
+  var data = getCanvasDataString();
+  var encryptedString = sjcl.encrypt(passcode, data);
+
+  saveAs(new Blob([encryptedString], {type: 'text/plain;charset=utf-8'}),
+         'encrypted.dat');
+};
+
+btnLoad.onclick = function() {
+
+};
+
+btnClear.onclick = function() {
+  clearCanvas();
+};
+
+function handleFileSelect(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+
+  var files = evt.dataTransfer.files; // FileList object.
+
+  // files is a FileList of File objects. List some properties.
+  var output = [];
+  for (var i = 0, f; f = files[i]; i++) {
+    output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                f.size, ' bytes, last modified: ',
+                f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                '</li>');
+  }
+  document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+}
+
+function handleDragOver(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+  evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+}
+
+// Setup the dnd listeners.
+var dropZone = document.getElementById('drop_zone');
+dropZone.addEventListener('dragover', handleDragOver, false);
+dropZone.addEventListener('drop', handleFileSelect, false);

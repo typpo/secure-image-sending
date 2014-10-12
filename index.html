@@ -1,6 +1,6 @@
 <link href="css/main.css" rel="stylesheet"/>
 <p>
-Drag an image onto the square below:
+Drag an image onto the square below to encrypt it:
 </p>
 
 <canvas id="canvas" width="500" height="500"></canvas><br><br>
@@ -8,11 +8,16 @@ Drag an image onto the square below:
 <textarea id="inout" rows="5" cols="80"></textarea>
 
 <p>
+  <button id="btnSave">Save Encrypted File</button>
+  <button id="btnLoad">Load Encrypted File</button>
   <button id="btnEncrypt">Encrypt</button>
   <button id="btnDecrypt">Decrypt</button>
   <button id="btnClear">Clear Image</button>
 </p>
 
+<div id="drop_zone">Drop files here to decrypt them.</div>
+<output id="list"></output>
+
 <script src="lib/sjcl.js"></script>
-<script src="lib/catiline.min.js"></script>
+<script src="lib/FileSaver.min.js"></script>
 <script src="js/main.js"></script>

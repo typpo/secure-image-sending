@@ -1,4 +1,9 @@
 #canvas {
   background-color: #ccc;
+}
 
+#drop_zone {
+  background-color: #ccc;
+  height: 500px;
+  width: 500px;
 }
