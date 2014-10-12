@@ -71,7 +71,7 @@ window.onload = function() {
   var btnClear = document.getElementById('btnClear');
 
   btnEncrypt.onclick = function() {
-    var passcode = 'foobar';
+    var passcode = prompt('What is your password?  Make it good.');
     var data = getCanvasDataString();
 
     var encryptedString = sjcl.encrypt(passcode, data);
@@ -81,7 +81,7 @@ window.onload = function() {
   };
 
   btnDecrypt.onclick = function() {
-    var passcode = 'foobar';
+    var passcode = prompt('Decrypt with password...');
 
     var data = document.getElementById('inout').value;
     var decryptedString = sjcl.decrypt(passcode, data);
